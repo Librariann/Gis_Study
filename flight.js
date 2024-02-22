@@ -48,6 +48,7 @@ const flight = async () => {
   viewer.clock.stopTime = stop.clone();
   viewer.clock.currentTime = start.clone();
   viewer.timeline.zoomTo(start, stop);
+  viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; // Loop at the end
   // Speed up the playback speed 50x.
   viewer.clock.multiplier = 5;
   // Start playing the scene.geatigoonore
@@ -145,6 +146,11 @@ const flight = async () => {
         i * timeStepInSeconds,
         new Cesium.JulianDate()
       );
+      const currentPosition = Cesium.Cartesian3.fromDegrees(
+        flightData[i].longitude,
+        flightData[i].latitude,
+        flightData[i].height
+      );
 
       if (i === 0) {
         const bearing = calculateCorrectBearing(
@@ -153,30 +159,20 @@ const flight = async () => {
           targetCoordinate.latitude,
           targetCoordinate.longitude
         );
-        // heading 계산
         heading = Cesium.Math.toRadians(bearing - 90);
-        // 모델의 방향 설정
         const hpr = new Cesium.HeadingPitchRoll(heading, 0.0, 0.0);
         property.addSample(
           time,
           Cesium.Transforms.headingPitchRollQuaternion(startPosition, hpr)
         );
       } else {
-        const currentPosition = Cesium.Cartesian3.fromDegrees(
-          flightData[i].longitude,
-          flightData[i].latitude,
-          flightData[i].height
-        );
-
         const bearing = calculateCorrectBearing(
           flightData[i].latitude,
           flightData[i].longitude,
           flightData[i + 1].latitude,
           flightData[i + 1].longitude
         );
-        // heading 계산
         heading = Cesium.Math.toRadians(bearing - 90);
-        // 모델의 방향 설정
         const hpr = new Cesium.HeadingPitchRoll(heading, 0.0, 0.0);
         property.addSample(
           time,
