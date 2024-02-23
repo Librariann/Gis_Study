@@ -10,7 +10,7 @@ const viewer = new Cesium.Viewer("cesiumContainer", {
 
 const osmBuildings = viewer.scene.primitives.add(Cesium.createOsmBuildings());
 
-const getJson = async () => {
+const getPathJson = async () => {
   return await fetch("./path.json").then((res) => res.json());
 };
 
@@ -20,7 +20,7 @@ const startTime = Cesium.JulianDate.now();
 
 const flight = async () => {
   const airplaneUri = "./path/no1.glb";
-  const flightData = await getJson();
+  const flightData = await getPathJson();
 
   const startCoordinate = flightData[0];
   const startPosition = Cesium.Cartesian3.fromDegrees(
